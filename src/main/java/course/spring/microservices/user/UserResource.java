@@ -24,8 +24,8 @@ public class UserResource {
     }
 
     @PostMapping("/create")
-    public void createUser(@RequestBody User user){
-        service.save(user);
+    public User createUser(@RequestBody User user){
+         return service.save(user);
     }
 
 }
