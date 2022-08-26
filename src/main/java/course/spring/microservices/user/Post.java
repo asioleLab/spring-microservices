@@ -2,6 +2,7 @@ package course.spring.microservices.user;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 
 
 @Entity
@@ -11,7 +12,7 @@ public class Post {
     @GeneratedValue
     private Integer id;
 
-//    @Size(min = 10)
+    @Size(min = 10)
     private String description;
 
     @ManyToOne(fetch = FetchType.LAZY)

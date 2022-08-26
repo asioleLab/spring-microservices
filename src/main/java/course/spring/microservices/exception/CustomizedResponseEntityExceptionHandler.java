@@ -1,8 +1,10 @@
 package course.spring.microservices.exception;
 
 import course.spring.microservices.user.UserNotFoundException;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
@@ -23,5 +25,20 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
     public final ResponseEntity<ErrorDetails> handleUserNotFoundException(Exception ex, WebRequest request) throws Exception {
         ErrorDetails errorDetails=new ErrorDetails(LocalDateTime.now(), ex.getMessage(), request.getDescription(false));
         return new ResponseEntity<ErrorDetails>(errorDetails, HttpStatus.NOT_FOUND);
+    }
+
+@Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        StringBuilder errorMessage=new StringBuilder();
+        ex.getFieldErrors().forEach(error -> {
+            if(ex.getFieldErrors().size()==ex.getFieldErrors().indexOf(error) || ex.getFieldErrors().indexOf(error)==0) {
+                errorMessage.append(error.getDefaultMessage());
+            }else {
+                errorMessage.append(" ; " + error.getDefaultMessage());
+            }
+        });
+        ErrorDetails errorDetails=new ErrorDetails(LocalDateTime.now(), errorMessage.toString(), request.getDescription(false));
+
+        return new ResponseEntity(errorDetails, HttpStatus.BAD_REQUEST);
     }
 }
