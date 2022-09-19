@@ -15,6 +15,13 @@ import java.util.List;
 @RestController
 public class FilteringController {
 
+    private MappingJacksonValue JacksonFiltering (MappingJacksonValue mappingJacksonValue, String beanFilter, String... fields){
+        SimpleBeanPropertyFilter filter = SimpleBeanPropertyFilter.filterOutAllExcept(fields);
+        FilterProvider filters = new SimpleFilterProvider().addFilter(beanFilter,filter);
+        mappingJacksonValue.setFilters(filters );
+        return mappingJacksonValue;
+    }
+
     @GetMapping("/filtering")
     public MappingJacksonValue filtering(){
         SomeBean someBean = new SomeBean("value1", "value2", "value3");
@@ -30,11 +37,9 @@ public class FilteringController {
     public MappingJacksonValue filteringList(){
         List<SomeBean> list = Arrays.asList(new SomeBean("value1", "value2", "value3"),new SomeBean("value4", "value5", "value6"));
         MappingJacksonValue mappingJacksonValue = new MappingJacksonValue(list);
-        SimpleBeanPropertyFilter filter = SimpleBeanPropertyFilter.filterOutAllExcept("field2","field3");
-        FilterProvider filters = new SimpleFilterProvider().addFilter("SomeBeanFilter",filter);
-        mappingJacksonValue.setFilters(filters );
+        return JacksonFiltering(mappingJacksonValue,"SomeBeanFilter", "field2", "field3" );
 
-       //        return Arrays.asList(new SomeBean("value1", "value2", "value3"),new SomeBean("value4", "value5", "value6"));
-        return mappingJacksonValue;
+        //        return Arrays.asList(new SomeBean("value1", "value2", "value3"),new SomeBean("value4", "value5", "value6"));
+
     }
 }
