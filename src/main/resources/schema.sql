@@ -1,4 +1,4 @@
-create table course
+create table COURSE
 (
     id bigint not null,
     name varchar(255) not null,
